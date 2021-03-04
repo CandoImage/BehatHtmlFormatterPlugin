@@ -29,6 +29,7 @@ class Scenario
      */
     private $steps;
     private $screenshotPath;
+    private $videoPath;
 
     /**
      * @return mixed
@@ -207,5 +208,35 @@ class Scenario
         }
 
         return '.'.substr($this->screenshotPath, strpos($this->screenshotPath, '/assets/screenshots'));
+    }
+
+    /**
+     * @param mixed $videoPath
+     */
+    public function setVideoPath($videoPath)
+    {
+      $this->videoPath = $videoPath;
+    }
+
+    /**
+     * @param mixed
+     */
+    public function getVideoPath()
+    {
+      return $this->videoPath;
+    }
+
+    /**
+     * Gets relative path to video recording.
+     *
+     * @return bool|string
+     */
+    public function getRelativeVideoPath()
+    {
+      if (!file_exists($this->videoPath)) {
+        return false;
+      }
+
+      return '.'.substr($this->videoPath, strpos($this->videoPath, '/video/'));
     }
 }

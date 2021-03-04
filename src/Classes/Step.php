@@ -16,6 +16,36 @@ class Step
     private $output;
     private $definition;
     private $argumentType;
+    private $startTime;
+    private $stopTime;
+
+    /**
+     * @return mixed
+     */
+    public function getStopTime() {
+      return $this->stopTime;
+    }
+
+    /**
+     * @param mixed $stopTime
+     */
+    public function setStopTime($stopTime): void {
+      $this->stopTime = $stopTime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartTime() {
+        return $this->startTime;
+    }
+
+    /**
+     * @param mixed $startTime
+     */
+    public function setStartTime($startTime): void {
+        $this->startTime = $startTime;
+    }
 
     /**
      * @return mixed

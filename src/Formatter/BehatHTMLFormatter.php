@@ -9,6 +9,7 @@ use Behat\Behat\EventDispatcher\Event\AfterStepTested;
 use Behat\Behat\EventDispatcher\Event\BeforeFeatureTested;
 use Behat\Behat\EventDispatcher\Event\BeforeOutlineTested;
 use Behat\Behat\EventDispatcher\Event\BeforeScenarioTested;
+use Behat\Behat\EventDispatcher\Event\BeforeStepTested;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Tester\Result\ExecutedStepResult;
 use Behat\Behat\Tester\Result\StepResult;
@@ -207,6 +208,7 @@ class BehatHTMLFormatter implements Formatter
             'tester.scenario_tested.after' => 'onAfterScenarioTested',
             'tester.outline_tested.before' => 'onBeforeOutlineTested',
             'tester.outline_tested.after' => 'onAfterOutlineTested',
+            'tester.step_tested.before' => 'onBeforeStepTested',
             'tester.step_tested.after' => 'onAfterStepTested',
         );
     }
@@ -492,6 +494,7 @@ class BehatHTMLFormatter implements Formatter
             preg_replace('/\W/', '', $event->getFeature()->getTitle()).'/'.
             preg_replace('/\W/', '', $event->getScenario()->getTitle()).'.png'
         );
+        $scenario->setVideoPath($this->printer->getOutputPath() . '/video/recording.mp4');
         $this->currentScenario = $scenario;
 
         $print = $this->renderer->renderBeforeScenario($this);
@@ -577,6 +580,7 @@ class BehatHTMLFormatter implements Formatter
     public function onBeforeStepTested(BeforeStepTested $event)
     {
         $print = $this->renderer->renderBeforeStep($this);
+        $event->getStep()->starTime = $this->getTimer()->getTime();
         $this->printer->writeln($print);
     }
 
@@ -586,12 +590,15 @@ class BehatHTMLFormatter implements Formatter
     public function onAfterStepTested(AfterStepTested $event)
     {
         $result = $event->getTestResult();
-
         /** @var Step $step */
         $step = new Step();
         $step->setKeyword($event->getStep()->getKeyword());
         $step->setText($event->getStep()->getText());
         $step->setLine($event->getStep()->getLine());
+        if (isset($event->getStep()->starTime)) {
+          $step->setStartTime($event->getStep()->starTime);
+          $step->setStopTime($this->getTimer()->getTime());
+        }
         $step->setResult($result);
         $step->setResultCode($result->getResultCode());
 
