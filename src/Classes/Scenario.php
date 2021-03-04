@@ -233,13 +233,11 @@ class Scenario
      */
     public function getRelativeVideoPath()
     {
-      // Some video recorders rename the file to the requested filename after
-      // this report is written. So for now we're happy with a check if mp4
-      // files exist.
-      if (empty(glob(dirname($this->videoPath) . '/*.mp4'))) {
+      // Check for explicitly set video name using our injection context.
+      if (!($videoName = \emuse\BehatHTMLFormatter\Context\VideoContext::getVideoName())) {
         return false;
       }
 
-      return '.'.substr($this->videoPath, strpos($this->videoPath, '/video/'));
+      return '.'.substr($this->videoPath, strpos($this->videoPath, '/video'))  . '/' . $videoName;
     }
 }
